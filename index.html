@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Risk Intelligence Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --navy:#0e1e35;--gold:#c8a96e;--gold-lt:#e2c99a;
+  --cream:#faf7f2;--white:#fff;
+  --red-dk:#8b1a1a;--red-md:#c0392b;--red-lt:#fce8e8;
+  --amb-dk:#7a4a00;--amb-md:#c87d00;--amb-lt:#fef3dc;
+  --grn-dk:#1a5c2a;--grn-md:#27ae60;--grn-lt:#e8f8ed;
+  --blu-dk:#0a3060;--blu-md:#2471a3;--blu-lt:#e8f4fb;
+  --pur-dk:#3d1c6e;--pur-md:#7d3cbc;--pur-lt:#f0eafc;
+  --tea-dk:#0a4040;--tea-md:#0e8c7a;--tea-lt:#e0f5f2;
+  --g100:#f5f3ef;--g200:#e8e4dc;--g600:#6b6560;
+  --txt:#1a1612;--txt-m:#5a5248;
+  --bdr:rgba(14,30,53,.12);--bdr-s:rgba(14,30,53,.22);
+  --rad:10px;--rad-lg:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--txt);font-size:14px;line-height:1.6}
+.nav{background:var(--navy);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.28);flex-wrap:wrap;gap:4px}
+.nav-logo{display:flex;align-items:center;gap:9px}
+.nav-icon{width:30px;height:30px;border-radius:6px;border:1px solid rgba(200,169,110,.4);display:flex;align-items:center;justify-content:center}
+.nav-icon i{color:var(--gold);font-size:15px}
+.nav-title{font-family:'DM Serif Display',serif;font-size:16px;color:#fff;letter-spacing:.02em}
+.nav-sub{font-size:10px;color:var(--gold-lt);opacity:.8;margin-top:1px}
+.nav-tabs{display:flex;gap:2px;flex-wrap:wrap}
+.nav-tabs button{padding:4px 10px;font-size:11px;font-family:'DM Sans',sans-serif;border:none;background:transparent;color:rgba(255,255,255,.6);cursor:pointer;border-radius:5px;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.nav-tabs button i{font-size:11px}
+.nav-tabs button:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9)}
+.nav-tabs button.on{background:rgba(200,169,110,.18);color:var(--gold-lt);font-weight:500}
+.pg{display:none;padding:1.25rem 1.5rem 3rem;max-width:1120px;margin:0 auto}
+.pg.on{display:block}
+.pg-hd{margin-bottom:1.25rem;padding-bottom:.9rem;border-bottom:1px solid var(--bdr)}
+.pg-hd h2{font-family:'DM Serif Display',serif;font-size:21px;color:var(--navy);margin-bottom:3px}
+.pg-hd p{font-size:12px;color:var(--txt-m);max-width:700px}
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin-bottom:1.25rem}
+.kpi{background:var(--white);border:0.5px solid var(--bdr);border-radius:var(--rad);padding:10px 13px;box-shadow:0 1px 3px rgba(14,30,53,.07)}
+.kl{font-size:10px;color:var(--txt-m);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.kv{font-size:21px;font-weight:500;line-height:1;color:var(--navy)}
+.kv.r{color:var(--red-md)}.kv.a{color:var(--amb-md)}.kv.g{color:var(--grn-md)}
+.ks{font-size:10px;color:var(--txt-m);margin-top:2px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:.9rem}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;margin-bottom:.9rem}
+.card{background:var(--white);border:0.5px solid var(--bdr);border-radius:var(--rad-lg);padding:.9rem 1.1rem;box-shadow:0 1px 4px rgba(14,30,53,.07)}
+.ct{font-size:10px;font-weight:500;color:var(--txt-m);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.bx{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500;white-space:nowrap}
+.bc{background:var(--red-lt);color:var(--red-dk)}
+.bh{background:#fce8dc;color:#7a2e00}
+.bm{background:var(--amb-lt);color:var(--amb-dk)}
+.bl{background:var(--grn-lt);color:var(--grn-dk)}
+.bi{background:var(--blu-lt);color:var(--blu-dk)}
+.bp{background:var(--pur-lt);color:var(--pur-dk)}
+.bt{background:var(--tea-lt);color:var(--tea-dk)}
+.bg{background:var(--g100);color:var(--g600)}
+.rt{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.rt th{font-size:10px;font-weight:500;color:var(--txt-m);text-align:left;padding:5px 7px;border-bottom:1px solid var(--bdr);text-transform:uppercase;letter-spacing:.04em}
+.rt td{padding:6px 7px;border-bottom:0.5px solid var(--bdr);color:var(--txt);vertical-align:middle}
+.rt tr.mr{cursor:pointer}.rt tr.mr:hover td{background:var(--g100)}
+.rt tr.wr td{padding:0}
+.wi{padding:11px 9px 14px;background:var(--g100);border-top:1px solid var(--bdr)}
+.wg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.wc{background:var(--white);border:0.5px solid var(--bdr);border-radius:var(--rad);padding:9px 10px}
+.wlb{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--txt-m);margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.wt{font-size:12px;font-weight:500;color:var(--txt);margin-bottom:5px;line-height:1.4}
+.wa{font-size:11px;color:var(--txt-m);line-height:1.5;margin-bottom:7px}
+.as{display:flex;align-items:flex-start;gap:5px;margin-top:4px}
+.sn{width:15px;height:15px;border-radius:50%;background:var(--blu-lt);color:var(--blu-dk);font-size:9px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.st{font-size:11px;color:var(--txt);line-height:1.4}
+.pb{height:4px;border-radius:2px;background:var(--g200);overflow:hidden;width:50px;display:inline-block;vertical-align:middle}
+.pf{height:100%;border-radius:2px}
+.fr{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.fb{padding:3px 9px;font-size:11px;border:0.5px solid var(--bdr-s);border-radius:20px;background:transparent;color:var(--txt-m);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .12s}
+.fb:hover{background:var(--g100)}
+.fb.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.hm{display:grid;grid-template-columns:auto repeat(5,1fr);gap:3px}
+.hmc{border-radius:5px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500}
+.h0{background:var(--g100)}.h1{background:#d6efc4;color:#1a5c2a}
+.h2{background:#fde7b0;color:#7a4a00}.h3{background:#fcd2b8;color:#7a2e00}.h4{background:#f9c8c8;color:#8b1a1a}
+.slg{margin-bottom:9px}
+.slr{display:flex;justify-content:space-between;font-size:12px;color:var(--txt-m);margin-bottom:3px}
+.slr span:last-child{font-weight:500;color:var(--txt)}
+input[type=range]{width:100%;accent-color:var(--navy)}
+.trow{display:flex;flex-direction:column;gap:7px}
+.tog{display:flex;align-items:flex-start;gap:9px;padding:9px 10px;border:0.5px solid var(--bdr);border-radius:var(--rad);cursor:pointer;background:var(--white);transition:all .15s}
+.tog:hover{border-color:var(--bdr-s)}
+.tog.on{border-color:var(--navy);background:#eef3fa}
+.togi{width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--g100);transition:background .15s}
+.tog.on .togi{background:var(--navy)}
+.togi i{font-size:13px;color:var(--txt-m);transition:color .15s}
+.tog.on .togi i{color:#fff}
+.tgt{font-size:12px;font-weight:500;color:var(--txt);margin-bottom:2px}
+.tgd{font-size:11px;color:var(--txt-m);line-height:1.4}
+.tgc{font-size:10px;font-weight:500;color:var(--txt-m);margin-top:3px}
+.tog.on .tgc{color:var(--navy)}
+.info{background:var(--g100);border-radius:0 var(--rad) var(--rad) 0;border-left:3px solid var(--navy);padding:9px 12px;font-size:12px;color:var(--txt-m);line-height:1.55;margin-bottom:.9rem}
+.leg{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--txt-m);margin-bottom:6px;align-items:center}
+.leg span{display:flex;align-items:center;gap:4px}
+.ld{width:10px;height:10px;border-radius:2px;display:inline-block}
+.scg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.9rem}
+.scc{border:0.5px solid var(--bdr);border-radius:var(--rad);padding:9px 11px;background:var(--white)}
+.sct{font-size:12px;font-weight:500;color:var(--txt);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.eb{background:none;border:0.5px solid var(--bdr-s);border-radius:4px;padding:2px 6px;font-size:10px;color:var(--txt-m);cursor:pointer;font-family:'DM Sans',sans-serif}
+.eb:hover{background:var(--g100)}
+.own{display:inline-flex;width:21px;height:21px;border-radius:50%;align-items:center;justify-content:center;font-size:9px;font-weight:500}
+.tscroll{overflow-x:auto}
+.ch{position:relative;margin-bottom:.9rem}
+.vel{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:500}
+.vel-h{background:#fce8e8;color:#8b1a1a}
+.vel-m{background:#fef3dc;color:#7a4a00}
+.vel-l{background:#e8f8ed;color:#1a5c2a}
+.ic-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:500;background:var(--pur-lt);color:var(--pur-dk)}
+.exec-wrap{margin-top:1.4rem}
+.exec-shield{background:var(--navy);border-radius:var(--rad-lg);padding:1.75rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;text-align:center}
+.exec-shield i.lk{font-size:34px;color:var(--gold);opacity:.9}
+.lock-title{font-family:'DM Serif Display',serif;font-size:16px;color:#fff;margin:0}
+.lock-hint{font-size:12px;color:rgba(255,255,255,.6);max-width:280px;margin:0;line-height:1.5}
+.lock-row{display:flex;gap:8px;align-items:center}
+.lock-row input{padding:6px 11px;border-radius:6px;border:1px solid rgba(200,169,110,.4);background:rgba(255,255,255,.07);color:#fff;font-size:13px;font-family:'DM Sans',sans-serif;width:165px;outline:none}
+.lock-row input::placeholder{color:rgba(255,255,255,.35)}
+.lock-row input:focus{border-color:var(--gold)}
+.lock-btn{padding:6px 14px;border-radius:6px;background:var(--gold);color:var(--navy);font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.lock-btn:hover{background:var(--gold-lt)}
+.lock-err{font-size:11px;color:#f9c8c8;min-height:14px;margin:0}
+.exec{background:var(--navy);border-radius:var(--rad-lg);padding:1.4rem 1.6rem;color:#fff;display:none}
+.exec-hd{display:flex;align-items:center;gap:9px;margin-bottom:.75rem}
+.exec-ic{width:32px;height:32px;border-radius:7px;background:rgba(200,169,110,.2);border:1px solid rgba(200,169,110,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.exec-ic i{color:var(--gold);font-size:16px}
+.exec h3{font-family:'DM Serif Display',serif;font-size:17px;color:#fff}
+.exec p{font-size:12px;color:rgba(255,255,255,.75);line-height:1.65;margin-bottom:.75rem}
+.exec p:last-of-type{margin-bottom:0}
+.exec strong{color:var(--gold-lt)}
+.exec-acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:8px;margin-top:.9rem}
+.exec-act{background:rgba(255,255,255,.06);border:0.5px solid rgba(255,255,255,.12);border-radius:var(--rad);padding:9px 11px}
+.exec-n{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);line-height:1;margin-bottom:3px}
+.exec-t{font-size:11px;font-weight:500;color:#fff;margin-bottom:3px}
+.exec-b{font-size:11px;color:rgba(255,255,255,.6);line-height:1.4}
+.relock-bar{display:flex;justify-content:flex-end;margin-top:.6rem}
+.relock-bar button{background:none;border:0.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);font-size:11px;padding:3px 8px;border-radius:4px;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:3px}
+.relock-bar button:hover{color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.45)}
+.rag{display:inline-flex;align-items:center;width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.rag-r{background:#c0392b}.rag-a{background:#c87d00}.rag-g{background:#27ae60}
+.bcm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:9px;margin-bottom:.9rem}
+.bcm-card{background:var(--white);border:0.5px solid var(--bdr);border-radius:var(--rad);padding:10px 12px}
+.bcm-svc{font-size:12px;font-weight:500;color:var(--txt);margin-bottom:3px}
+.bcm-meta{font-size:11px;color:var(--txt-m);margin-bottom:5px}
+.rto-bar{height:5px;border-radius:3px;background:var(--g200);overflow:hidden;margin-top:4px}
+.rto-fill{height:100%;border-radius:3px}
+.iso-badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:4px;font-size:11px;font-weight:500;background:var(--blu-lt);color:var(--blu-dk);margin-bottom:.9rem}
+.appetite-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--bdr)}
+.appetite-row:last-child{border-bottom:none}
+.ap-label{font-size:11px;color:var(--txt-m);width:150px;flex-shrink:0}
+.ap-bar-wrap{flex:1;height:7px;background:var(--g200);border-radius:4px;overflow:hidden;position:relative}
+.ap-bar{height:100%;border-radius:4px}
+.ap-limit{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--red-md);border-radius:1px}
+.ap-val{font-size:11px;font-weight:500;width:55px;text-align:right;flex-shrink:0}
+@media(max-width:680px){
+  .nav{height:auto;padding:8px 1rem;gap:6px}
+  .nav-tabs{flex-wrap:wrap;justify-content:center}
+  .pg{padding:1rem 1rem 2rem}
+  .two,.three,.wg,.scg,.exec-acts,.bcm-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-icon"><i class="ti ti-shield-check"></i></div>
+    <div>
+      <div class="nav-title">Risk Intelligence Hub</div>
+      <div class="nav-sub">Enterprise Risk Management &middot; Q2 2026</div>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="on" onclick="sw('erm',this)"><i class="ti ti-layout-dashboard"></i>ERM overview</button>
+    <button onclick="sw('reg',this)"><i class="ti ti-list-search"></i>WCGW register</button>
+    <button onclick="sw('bcm',this)"><i class="ti ti-lifebuoy"></i>Business continuity</button>
+    <button onclick="sw('mc',this)"><i class="ti ti-chart-dots"></i>Monte Carlo</button>
+    <button onclick="sw('hg',this)"><i class="ti ti-shield-half"></i>Hedge analyser</button>
+    <button onclick="sw('op',this)"><i class="ti ti-settings"></i>Outage simulator</button>
+  </div>
+</nav>
+
+<!-- PAGE 1 ERM OVERVIEW -->
+<div id="pg-erm" class="pg on">
+  <div class="pg-hd"><h2>ERM overview</h2><p>Portfolio-level risk landscape &mdash; heat map, category distribution, top residual risks, control effectiveness and risk appetite.</p></div>
+  <div class="krow">
+    <div class="kpi"><div class="kl">Critical risks</div><div class="kv r">3</div><div class="ks">Stable vs Q1 2026</div></div>
+    <div class="kpi"><div class="kl">High risks</div><div class="kv a">5</div><div class="ks">&#8595;2 vs Q1 (consolidated)</div></div>
+    <div class="kpi"><div class="kl">GRC register</div><div class="kv">10</div><div class="ks">Consolidated from 12</div></div>
+    <div class="kpi"><div class="kl">Controls effective</div><div class="kv g">78%</div><div class="ks">&#8593;3pp vs Q1</div></div>
+    <div class="kpi"><div class="kl">Open actions</div><div class="kv">23</div><div class="ks">7 overdue</div></div>
+    <div class="kpi"><div class="kl">BCM status</div><div class="kv a">Partial</div><div class="ks">3 of 6 services tested</div></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <div class="ct">Risk heat map &mdash; residual exposure</div>
+      <div id="hmap"></div>
+      <div class="leg" style="margin-top:8px">
+        <span><span class="ld" style="background:#d6efc4"></span>Low</span>
+        <span><span class="ld" style="background:#fde7b0"></span>Medium</span>
+        <span><span class="ld" style="background:#fcd2b8"></span>High</span>
+        <span><span class="ld" style="background:#f9c8c8"></span>Critical</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Risk distribution by category</div>
+      <div class="leg" style="margin-bottom:7px">
+        <span><span class="ld" style="background:#2471a3"></span>Market 3</span>
+        <span><span class="ld" style="background:#0e8c7a"></span>Operational 3</span>
+        <span><span class="ld" style="background:#c0392b"></span>Regulatory 2</span>
+        <span><span class="ld" style="background:#7d3cbc"></span>Cyber 1</span>
+        <span><span class="ld" style="background:#6b6560"></span>Strategic 1</span>
+      </div>
+      <div class="ch" style="height:175px"><canvas id="catCh"></canvas></div>
+    </div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <div class="ct">Top 5 risks by residual score</div>
+      <table class="rt" style="table-layout:auto">
+        <thead><tr><th>Risk</th><th>Score</th><th>Velocity</th><th>Trend</th></tr></thead>
+        <tbody>
+          <tr><td>Market &amp; liquidity risk</td><td><span class="bx bc">18</span></td><td><span class="vel vel-h"><i class="ti ti-bolt" style="font-size:9px"></i> Hours</span></td><td style="color:var(--red-md)">&#8593;</td></tr>
+          <tr><td>Cyber &amp; OT resilience</td><td><span class="bx bc">16</span></td><td><span class="vel vel-h"><i class="ti ti-bolt" style="font-size:9px"></i> Hours</span></td><td style="color:var(--red-md)">&#8593;</td></tr>
+          <tr><td>Regulatory non-compliance</td><td><span class="bx bc">14</span></td><td><span class="vel vel-m"><i class="ti ti-clock" style="font-size:9px"></i> Weeks</span></td><td style="color:var(--g600)">&#8594;</td></tr>
+          <tr><td>Hydro asset availability</td><td><span class="bx bh">12</span></td><td><span class="vel vel-m"><i class="ti ti-clock" style="font-size:9px"></i> Days</span></td><td style="color:var(--g600)">&#8594;</td></tr>
+          <tr><td>Geopolitical &amp; sanctions</td><td><span class="bx bh">11</span></td><td><span class="vel vel-m"><i class="ti ti-clock" style="font-size:9px"></i> Days</span></td><td style="color:var(--red-md)">&#8593;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="ct">Risk appetite vs current exposure</div>
+      <div id="appetite-list"></div>
+    </div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <div class="ct">Control effectiveness trend</div>
+      <div class="leg" style="margin-bottom:6px">
+        <span><span class="ld" style="background:#2471a3"></span>Effective %</span>
+        <span><span class="ld" style="background:#c0392b"></span>Ineffective %</span>
+      </div>
+      <div class="ch" style="height:165px"><canvas id="ctrlCh"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">Risk interconnection &mdash; compound amplification</div>
+      <div style="font-size:11px;color:var(--txt-m);margin-bottom:9px">When these risk pairs coincide, severity is amplified beyond the sum of individual impacts.</div>
+      <div id="ic-map"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2 WCGW REGISTER -->
+<div id="pg-reg" class="pg">
+  <div class="pg-hd"><h2>WCGW risk register</h2><p>10 consolidated risks with top-2 what-can-go-wrong scenarios, velocity rating, interconnections and three mitigating actions per scenario. Click any row to expand.</p></div>
+  <div class="krow">
+    <div class="kpi"><div class="kl">Critical</div><div class="kv r">3</div><div class="ks">R-001, R-002, R-003</div></div>
+    <div class="kpi"><div class="kl">High</div><div class="kv a">5</div><div class="ks">R-004 to R-008</div></div>
+    <div class="kpi"><div class="kl">Medium</div><div class="kv">2</div><div class="ks">R-009, R-010</div></div>
+    <div class="kpi"><div class="kl">Avg control coverage</div><div class="kv">71%</div><div class="ks">Target 85%</div></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+      <div class="ct" style="margin:0">Click any row to expand top-2 WCGW scenarios</div>
+      <div class="fr" style="margin:0">
+        <button class="fb on" onclick="flt(this,'all')">All</button>
+        <button class="fb" onclick="flt(this,'critical')">Critical</button>
+        <button class="fb" onclick="flt(this,'high')">High</button>
+        <button class="fb" onclick="flt(this,'medium')">Medium</button>
+      </div>
+    </div>
+    <div class="tscroll">
+      <table class="rt" style="min-width:800px">
+        <colgroup><col style="width:46px"><col style="width:155px"><col style="width:74px"><col style="width:22px"><col style="width:22px"><col style="width:52px"><col style="width:74px"><col style="width:52px"><col style="width:28px"><col style="width:58px"><col style="width:66px"><col style="width:80px"><col style="width:66px"></colgroup>
+        <thead><tr><th>ID</th><th>Risk</th><th>Category</th><th>L</th><th>I</th><th>Inherent</th><th>Controls</th><th>Residual</th><th>Own</th><th>Status</th><th>Velocity</th><th>Interconnects</th><th>WCGW</th></tr></thead>
+        <tbody id="rtb"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3 BUSINESS CONTINUITY -->
+<div id="pg-bcm" class="pg">
+  <div class="pg-hd"><h2>Business continuity management</h2><p>Critical service mapping, RTO/RPO targets, BCM testing status and ISO 22301 alignment. Last reviewed: Q2 2026.</p></div>
+  <div><span class="iso-badge"><i class="ti ti-certificate" style="font-size:11px;margin-right:4px"></i>Aligned to ISO 22301:2019 &middot; DORA Article 11 &middot; NIS2 Directive</span></div>
+  <div class="krow" style="margin-top:.9rem">
+    <div class="kpi"><div class="kl">Critical services</div><div class="kv">6</div><div class="ks">Mapped &amp; classified</div></div>
+    <div class="kpi"><div class="kl">BCPs documented</div><div class="kv a">4</div><div class="ks">2 pending update</div></div>
+    <div class="kpi"><div class="kl">Plans tested</div><div class="kv r">3</div><div class="ks">of 6 &mdash; Q4 2025</div></div>
+    <div class="kpi"><div class="kl">Next exercise</div><div class="kv">Sep 26</div><div class="ks">Full tabletop planned</div></div>
+    <div class="kpi"><div class="kl">Avg RTO target</div><div class="kv">6h</div><div class="ks">Across critical services</div></div>
+    <div class="kpi"><div class="kl">ISO 22301 gap</div><div class="kv a">31%</div><div class="ks">Controls not yet met</div></div>
+  </div>
+  <div class="ct" style="margin-bottom:8px">Critical business services &mdash; RTO/RPO and BCM status</div>
+  <div class="bcm-grid" id="bcm-services"></div>
+  <div class="two">
+    <div class="card">
+      <div class="ct">BCM maturity by pillar &mdash; ISO 22301</div>
+      <div class="ch" style="height:210px"><canvas id="bcmRadar"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ct">RTO target vs current estimated recovery capability</div>
+      <div id="rto-list"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:.9rem">
+    <div class="ct">Business impact analysis &mdash; disruption scenario matrix</div>
+    <div class="tscroll">
+      <table class="rt" style="table-layout:auto">
+        <thead><tr><th>Disruption scenario</th><th>Trigger risk</th><th>Services affected</th><th>Max tolerable disruption</th><th>Financial impact / day</th><th>RAG</th></tr></thead>
+        <tbody>
+          <tr><td>Trading platform total outage</td><td><span class="bx bc">R-001</span></td><td>Energy trading, settlement</td><td>4 hours</td><td>CHF 3&ndash;8M</td><td><span class="rag rag-r"></span></td></tr>
+          <tr><td>OT/SCADA system compromise</td><td><span class="bx bc">R-002</span></td><td>Asset dispatch, grid interface</td><td>2 hours</td><td>CHF 5&ndash;15M</td><td><span class="rag rag-r"></span></td></tr>
+          <tr><td>Regulatory reporting failure</td><td><span class="bx bc">R-003</span></td><td>REMIT reporting, compliance</td><td>24 hours</td><td>EUR 1&ndash;5M fine</td><td><span class="rag rag-a"></span></td></tr>
+          <tr><td>Major hydro asset outage</td><td><span class="bx bh">R-004</span></td><td>Generation, dispatch</td><td>72 hours</td><td>CHF 1&ndash;3M</td><td><span class="rag rag-a"></span></td></tr>
+          <tr><td>Treasury system failure</td><td><span class="bx bh">R-005</span></td><td>Liquidity management, collateral</td><td>8 hours</td><td>CHF 2&ndash;6M</td><td><span class="rag rag-a"></span></td></tr>
+          <tr><td>Gas supply disruption (&gt;5 days)</td><td><span class="bx bh">R-006</span></td><td>Fuel supply, peaker dispatch</td><td>48 hours</td><td>CHF 0.5&ndash;2M</td><td><span class="rag rag-g"></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:.9rem">
+    <div class="ct">BCM action plan &mdash; priority gap closures</div>
+    <div class="tscroll">
+      <table class="rt" style="table-layout:auto">
+        <thead><tr><th>Gap</th><th>ISO 22301 clause</th><th>Priority</th><th>Owner</th><th>Target</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>BCP for OT/SCADA disruption not documented</td><td>8.4</td><td><span class="bx bc">Critical</span></td><td>CISO</td><td>Q3 2026</td><td><span class="bx bm">In progress</span></td></tr>
+          <tr><td>No full DR test of trading failover in 18 months</td><td>8.5</td><td><span class="bx bc">Critical</span></td><td>CTO</td><td>Q3 2026</td><td><span class="bx bm">Planned</span></td></tr>
+          <tr><td>Supplier BCM requirements not in contracts</td><td>8.4.3</td><td><span class="bx bh">High</span></td><td>Procurement</td><td>Q4 2026</td><td><span class="bx bg">Not started</span></td></tr>
+          <tr><td>No crisis communication plan for staff</td><td>7.4</td><td><span class="bx bh">High</span></td><td>HR</td><td>Q4 2026</td><td><span class="bx bm">In progress</span></td></tr>
+          <tr><td>BCM awareness training not completed for all staff</td><td>7.2</td><td><span class="bx bm">Medium</span></td><td>HR</td><td>Q1 2027</td><td><span class="bx bg">Not started</span></td></tr>
+          <tr><td>Post-incident review process not formalised</td><td>10.1</td><td><span class="bx bm">Medium</span></td><td>ERM</td><td>Q1 2027</td><td><span class="bx bm">In progress</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="exec-wrap" id="ew-bcm">
+    <div class="exec-shield" id="es-bcm">
+      <i class="ti ti-lock lk"></i>
+      <p class="lock-title">Executive recommendation</p>
+      <p class="lock-hint">This section contains board-level recommendations. Enter the password to unlock.</p>
+      <div class="lock-row"><input type="password" id="ep-bcm" placeholder="Password" onkeydown="if(event.key==='Enter')tryUnlock('bcm')"><button class="lock-btn" onclick="tryUnlock('bcm')">Unlock</button></div>
+      <p class="lock-err" id="ee-bcm"></p>
+    </div>
+    <div class="exec" id="ec-bcm">
+      <div class="exec-hd"><div class="exec-ic"><i class="ti ti-podium"></i></div><h3>Executive recommendation &mdash; business continuity</h3></div>
+      <p>The BIA confirms that <strong>two critical scenarios carry no tested recovery plan</strong>: OT/SCADA compromise (MTPD 2 hours, no BCP documented) and trading platform total outage (MTPD 4 hours, last DR test over 18 months ago). Both link directly to the two highest-residual risks in the register. A regulatory inspection under DORA or NIS2 would flag these gaps immediately, representing a licence-to-operate risk in addition to operational and financial exposure.</p>
+      <p>The ISO 22301 maturity assessment shows the organisation is strongest on risk assessment and weakest on exercising and continual improvement &mdash; precisely the two pillars regulators examine most closely. <strong>The September 2026 tabletop exercise is necessary but insufficient</strong> &mdash; the OT/SCADA BCP must be documented before that exercise can be run meaningfully.</p>
+      <div class="exec-acts">
+        <div class="exec-act"><div class="exec-n">01</div><div class="exec-t">Document OT/SCADA BCP immediately</div><div class="exec-b">CISO to produce a documented BCP for OT/SCADA disruption by end Q3 2026. This is a DORA Article 11 obligation and a prerequisite for the September tabletop exercise.</div></div>
+        <div class="exec-act"><div class="exec-n">02</div><div class="exec-t">Run trading failover DR test in Q3 2026</div><div class="exec-b">CTO to execute a full DR test of trading platform failover to secondary datacenter. Last test was over 18 months ago. The 4-hour RTO target must be validated, not assumed.</div></div>
+        <div class="exec-act"><div class="exec-n">03</div><div class="exec-t">Embed BCM in supplier contracts</div><div class="exec-b">Procurement to add BCM and DR requirements to all Tier-1 supplier contracts at next renewal. ISO 22301 clause 8.4.3 compliance is required and currently absent from all vendor MSAs.</div></div>
+        <div class="exec-act"><div class="exec-n">04</div><div class="exec-t">Elevate BCM to Board agenda Q3 2026</div><div class="exec-b">Head of ERM to present the BCM maturity assessment and gap closure plan to the Board Risk Committee in Q3 2026. NIS2 and DORA create personal liability for directors where BCM obligations are not met.</div></div>
+      </div>
+      <div class="relock-bar"><button onclick="relock('bcm')"><i class="ti ti-lock" style="font-size:11px"></i> Re-lock</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 4 MONTE CARLO -->
+<div id="pg-mc" class="pg">
+  <div class="pg-hd"><h2>Monte Carlo &mdash; revenue risk simulator</h2><p>R-001 WCGW #2: prolonged low-price environment eroding asset economics. 5,000 simulations &middot; 3-year horizon.</p></div>
+  <div class="info"><strong>What this models:</strong> Each simulation draws a random electricity price path (log-normal with drift + volatility), a hydrology year, and a random O&amp;M cost. Revenue = price &times; volume &times; (1 &minus; forced outage rate). Adjust sliders to stress-test assumptions.</div>
+  <div class="three">
+    <div class="card">
+      <div class="ct">Price assumptions</div>
+      <div class="slg"><div class="slr"><span>Base price (CHF/MWh)</span><span id="mv-sp">42</span></div><input type="range" min="28" max="65" step="1" value="42" id="ms-sp"></div>
+      <div class="slg"><div class="slr"><span>Annual drift (%)</span><span id="mv-dr">0</span></div><input type="range" min="-8" max="8" step="1" value="0" id="ms-dr"></div>
+      <div class="slg"><div class="slr"><span>Volatility (% p.a.)</span><span id="mv-vl">35</span></div><input type="range" min="10" max="70" step="1" value="35" id="ms-vl"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Volume &amp; cost</div>
+      <div class="slg"><div class="slr"><span>Generation (TWh/yr)</span><span id="mv-gn">3.2</span></div><input type="range" min="1" max="6" step="1" value="3" id="ms-gn"></div>
+      <div class="slg"><div class="slr"><span>Inflow variability (%)</span><span id="mv-iv">18</span></div><input type="range" min="5" max="40" step="1" value="18" id="ms-iv"></div>
+      <div class="slg"><div class="slr"><span>O&amp;M cost (CHF M/yr)</span><span id="mv-om">28</span></div><input type="range" min="15" max="55" step="1" value="28" id="ms-om"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Key risk metrics</div>
+      <div class="kpi" style="margin-bottom:7px"><div class="kl">Expected EBITDA</div><div class="kv" id="mk-mean" style="font-size:17px">&#8212;</div></div>
+      <div class="kpi" style="margin-bottom:7px"><div class="kl">VaR 95%</div><div class="kv r" id="mk-var" style="font-size:17px">&#8212;</div></div>
+      <div class="kpi" style="margin-bottom:7px"><div class="kl">CVaR 95%</div><div class="kv r" id="mk-cvar" style="font-size:17px">&#8212;</div></div>
+      <div class="kpi"><div class="kl">P(loss)</div><div class="kv" id="mk-neg" style="font-size:17px">&#8212;</div></div>
+    </div>
+  </div>
+  <div class="leg">
+    <span><span class="ld" style="background:#2471a3"></span>Profitable outcomes</span>
+    <span><span class="ld" style="background:#c0392b"></span>Tail loss (worst 5%)</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:2px;height:13px;background:#c87d00;display:inline-block"></span>VaR 95%</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:2px;height:13px;background:#8b1a1a;display:inline-block"></span>CVaR 95%</span>
+  </div>
+  <div class="ch" style="height:230px"><canvas id="mcCh"></canvas></div>
+  <div class="info" id="mc-interp"></div>
+  <div class="exec-wrap" id="ew-mc">
+    <div class="exec-shield" id="es-mc">
+      <i class="ti ti-lock lk"></i>
+      <p class="lock-title">Executive recommendation</p>
+      <p class="lock-hint">This section contains board-level recommendations. Enter the password to unlock.</p>
+      <div class="lock-row"><input type="password" id="ep-mc" placeholder="Password" onkeydown="if(event.key==='Enter')tryUnlock('mc')"><button class="lock-btn" onclick="tryUnlock('mc')">Unlock</button></div>
+      <p class="lock-err" id="ee-mc"></p>
+    </div>
+    <div class="exec" id="ec-mc">
+      <div class="exec-hd"><div class="exec-ic"><i class="ti ti-podium"></i></div><h3>Executive recommendation &mdash; R-001 market &amp; liquidity risk</h3></div>
+      <p>The Monte Carlo analysis confirms that at the current 18-month forward curve of <strong>CHF 38/MWh</strong> the portfolio operates below its <strong>CHF 42/MWh breakeven</strong>. Under base assumptions the probability of a loss year exceeds 20% and the CVaR tail reaches deeply negative EBITDA territory. Price volatility of 35% p.a. is sufficient to generate outlier loss years even above breakeven, making mean-based budgeting unreliable. <strong>Management should anchor capital allocation and dividend planning to the VaR 95% outcome, not the expected value.</strong></p>
+      <div class="exec-acts">
+        <div class="exec-act"><div class="exec-n">01</div><div class="exec-t">Execute forward hedging immediately</div><div class="exec-b">Lock 60% of generation 12 months forward. Reduces VaR by 30&ndash;50% &mdash; see Hedge Analyser for quantification.</div></div>
+        <div class="exec-act"><div class="exec-n">02</div><div class="exec-t">Re-anchor budget to VaR 95%</div><div class="exec-b">Board and ExCo planning floors should use VaR 95% not expected EBITDA. Include 3-sigma price shock in stress scenario set.</div></div>
+        <div class="exec-act"><div class="exec-n">03</div><div class="exec-t">Trigger impairment review at 60 days below breakeven</div><div class="exec-b">Activate asset impairment protocol when revenue coverage of fixed O&amp;M falls below 1.1&times; for two consecutive quarterly reviews.</div></div>
+      </div>
+      <div class="relock-bar"><button onclick="relock('mc')"><i class="ti ti-lock" style="font-size:11px"></i> Re-lock</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 5 HEDGE ANALYSER -->
+<div id="pg-hg" class="pg">
+  <div class="pg-hd"><h2>Hedge analyser &mdash; R-001 price risk</h2><p>Unhedged vs forward-hedged EBITDA distribution. 60% of generation sold at locked forward price; 40% at simulated spot. 5,000 simulations.</p></div>
+  <div class="info"><strong>How the hedge works:</strong> 60% of generation volume is sold forward at a locked-in price. The remaining 40% is sold at simulated spot. The hedge eliminates price uncertainty on the locked portion but caps upside if prices rise.</div>
+  <div class="three">
+    <div class="card">
+      <div class="ct">Market conditions</div>
+      <div class="slg"><div class="slr"><span>Spot base (CHF/MWh)</span><span id="hv-sp">38</span></div><input type="range" min="25" max="65" step="1" value="38" id="hs-sp"></div>
+      <div class="slg"><div class="slr"><span>Volatility (% p.a.)</span><span id="hv-vl">35</span></div><input type="range" min="10" max="70" step="1" value="35" id="hs-vl"></div>
+      <div class="slg"><div class="slr"><span>Annual drift (%)</span><span id="hv-dr">0</span></div><input type="range" min="-8" max="8" step="1" value="0" id="hs-dr"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Hedge parameters</div>
+      <div class="slg"><div class="slr"><span>Forward price (CHF/MWh)</span><span id="hv-fp">42</span></div><input type="range" min="28" max="65" step="1" value="42" id="hs-fp"></div>
+      <div class="slg"><div class="slr"><span>Hedge ratio (%)</span><span id="hv-hr">60</span></div><input type="range" min="0" max="100" step="5" value="60" id="hs-hr"></div>
+      <div class="slg"><div class="slr"><span>Hedge cost (CHF M/yr)</span><span id="hv-hc">1</span></div><input type="range" min="0" max="8" step="1" value="1" id="hs-hc"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Comparison metrics</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="kpi"><div class="kl">VaR unhedged</div><div class="kv r" id="hk-vu" style="font-size:15px">&#8212;</div></div>
+        <div class="kpi"><div class="kl">VaR hedged</div><div class="kv g" id="hk-vh" style="font-size:15px">&#8212;</div></div>
+        <div class="kpi"><div class="kl">P(loss) unhedged</div><div class="kv r" id="hk-pu" style="font-size:15px">&#8212;</div></div>
+        <div class="kpi"><div class="kl">P(loss) hedged</div><div class="kv g" id="hk-ph" style="font-size:15px">&#8212;</div></div>
+        <div class="kpi"><div class="kl">VaR improvement</div><div class="kv" id="hk-im" style="font-size:15px">&#8212;</div></div>
+        <div class="kpi"><div class="kl">Upside foregone</div><div class="kv a" id="hk-uc" style="font-size:15px">&#8212;</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="leg">
+    <span><span class="ld" style="background:rgba(192,57,43,.45)"></span>Unhedged</span>
+    <span><span class="ld" style="background:rgba(14,140,122,.6)"></span>Hedged</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:2px;height:13px;background:#8b1a1a;display:inline-block"></span>VaR unhedged</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:2px;height:13px;background:#0a4040;display:inline-block"></span>VaR hedged</span>
+  </div>
+  <div class="ch" style="height:230px"><canvas id="hgCh"></canvas></div>
+  <div class="info" id="hg-interp"></div>
+  <div class="exec-wrap" id="ew-hg">
+    <div class="exec-shield" id="es-hg">
+      <i class="ti ti-lock lk"></i>
+      <p class="lock-title">Executive recommendation</p>
+      <p class="lock-hint">This section contains board-level recommendations. Enter the password to unlock.</p>
+      <div class="lock-row"><input type="password" id="ep-hg" placeholder="Password" onkeydown="if(event.key==='Enter')tryUnlock('hg')"><button class="lock-btn" onclick="tryUnlock('hg')">Unlock</button></div>
+      <p class="lock-err" id="ee-hg"></p>
+    </div>
+    <div class="exec" id="ec-hg">
+      <div class="exec-hd"><div class="exec-ic"><i class="ti ti-podium"></i></div><h3>Executive recommendation &mdash; forward hedging strategy</h3></div>
+      <p>A 60% forward hedge at a price above spot (default: <strong>CHF 42/MWh forward vs CHF 38/MWh spot</strong>) simultaneously reduces downside tail risk and adds expected value &mdash; the forward is locked above current market, making this a value-accretive risk transfer, not merely a cost. <strong>CVaR improvement is proportionally larger than VaR improvement</strong> &mdash; the hedge compresses severity of tail losses most dramatically in the worst-case scenarios, protecting balance sheet resilience and covenant compliance precisely when it matters most.</p>
+      <div class="exec-acts">
+        <div class="exec-act"><div class="exec-n">01</div><div class="exec-t">Execute 60% hedge at current forward rates</div><div class="exec-b">Board to authorise 12-month forward baseload contracts covering 60% of expected generation. Hedge cost sub-CHF 1M/yr; VaR saving exceeds CHF 10M at baseline parameters.</div></div>
+        <div class="exec-act"><div class="exec-n">02</div><div class="exec-t">Set hard trigger for hedge ratio review</div><div class="exec-b">If forward price falls below CHF 40/MWh, convene Treasury and Risk Committee within 5 business days. Do not auto-roll at unfavourable prices.</div></div>
+        <div class="exec-act"><div class="exec-n">03</div><div class="exec-t">Monitor basis risk monthly</div><div class="exec-b">Track actual generation vs hedged volume. If inflow projections fall below 85% of mean, flag to CRO &mdash; under-generation creates a short position at the forward price.</div></div>
+      </div>
+      <div class="relock-bar"><button onclick="relock('hg')"><i class="ti ti-lock" style="font-size:11px"></i> Re-lock</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 6 OUTAGE SIMULATOR -->
+<div id="pg-op" class="pg">
+  <div class="pg-hd"><h2>Outage &amp; drought loss simulator &mdash; R-004</h2><p>Monte Carlo operational loss model: turbine failure (Poisson) &times; drought severity (log-normal) &times; recovery lead-time. Toggle mitigations to quantify their financial impact.</p></div>
+  <div class="info"><strong>What this models:</strong> Each simulation independently draws a turbine failure event (Poisson arrival), a drought year severity, and a recovery lead-time. Annual revenue loss = lost generation &times; price + emergency recovery cost. A drought during an outage amplifies losses because remaining units also run below capacity.</div>
+  <div class="three">
+    <div class="card">
+      <div class="ct">Equipment failure parameters</div>
+      <div class="slg"><div class="slr"><span>Fleet size (units)</span><span id="ov-fl">8</span></div><input type="range" min="3" max="16" step="1" value="8" id="os-fl"></div>
+      <div class="slg"><div class="slr"><span>MTBF per unit (years)</span><span id="ov-mt">9</span></div><input type="range" min="4" max="20" step="1" value="9" id="os-mt"></div>
+      <div class="slg"><div class="slr"><span>Mean recovery time (months)</span><span id="ov-rc">10</span></div><input type="range" min="2" max="18" step="1" value="10" id="os-rc"></div>
+      <div class="slg"><div class="slr"><span>Emergency recovery cost (CHF M)</span><span id="ov-ec">18</span></div><input type="range" min="5" max="50" step="1" value="18" id="os-ec"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Drought &amp; revenue</div>
+      <div class="slg"><div class="slr"><span>Base annual revenue (CHF M)</span><span id="ov-rv">120</span></div><input type="range" min="40" max="250" step="5" value="120" id="os-rv"></div>
+      <div class="slg"><div class="slr"><span>Drought probability (% / yr)</span><span id="ov-dp">22</span></div><input type="range" min="5" max="50" step="1" value="22" id="os-dp"></div>
+      <div class="slg"><div class="slr"><span>Drought revenue impact (%)</span><span id="ov-di">20</span></div><input type="range" min="5" max="45" step="1" value="20" id="os-di"></div>
+      <div class="slg"><div class="slr"><span>Impact volatility (%)</span><span id="ov-dv">8</span></div><input type="range" min="2" max="20" step="1" value="8" id="os-dv"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Mitigation levers</div>
+      <div class="trow">
+        <div class="tog" id="tog-mt" onclick="tmit('mt')"><div class="togi"><i class="ti ti-tool"></i></div><div><div class="tgt">Preventive maintenance</div><div class="tgd">Turbines &gt;10yr serviced proactively. Reduces failure rate ~40%; cuts recovery by 3 months.</div><div class="tgc">Cost: CHF 4M/yr CAPEX</div></div></div>
+        <div class="tog" id="tog-ts" onclick="tmit('ts')"><div class="togi"><i class="ti ti-plug-connected"></i></div><div><div class="tgt">TSO standby capacity contract</div><div class="tgd">Contracted standby from neighbouring operator. Replaces 35% of lost generation during outage.</div><div class="tgc">Cost: CHF 2.5M/yr retainer</div></div></div>
+        <div class="tog" id="tog-wd" onclick="tmit('wd')"><div class="togi"><i class="ti ti-droplet"></i></div><div><div class="tgt">Weather derivative hedge</div><div class="tgd">Precipitation-linked payout when inflow falls &gt;15% below mean. Covers 20% of drought loss.</div><div class="tgc">Cost: CHF 1.8M/yr premium</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="krow">
+    <div class="kpi"><div class="kl">Expected annual loss</div><div class="kv" id="ok-mn">&#8212;</div><div class="ks">3-yr average</div></div>
+    <div class="kpi"><div class="kl">VaR 95%</div><div class="kv r" id="ok-vr">&#8212;</div><div class="ks">Worst 5% threshold</div></div>
+    <div class="kpi"><div class="kl">CVaR 95%</div><div class="kv r" id="ok-cv">&#8212;</div><div class="ks">Avg tail severity</div></div>
+    <div class="kpi"><div class="kl">P(loss &gt; CHF 20M)</div><div class="kv" id="ok-p2">&#8212;</div><div class="ks">Severe loss probability</div></div>
+    <div class="kpi"><div class="kl">VaR saving</div><div class="kv g" id="ok-sv">&#8212;</div><div class="ks">vs baseline</div></div>
+    <div class="kpi"><div class="kl">Mitigation cost</div><div class="kv a" id="ok-mc">CHF 0</div><div class="ks">Annual CHF M</div></div>
+  </div>
+  <div class="leg">
+    <span><span class="ld" style="background:rgba(192,57,43,.45)"></span>Baseline</span>
+    <span><span class="ld" style="background:rgba(14,140,122,.6)"></span>Mitigated</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:2px;height:13px;background:#8b1a1a;display:inline-block"></span>VaR baseline</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:2px;height:13px;background:#0a4040;display:inline-block"></span>VaR mitigated</span>
+  </div>
+  <div class="ch" style="height:230px"><canvas id="opCh"></canvas></div>
+  <div class="info" id="op-interp"></div>
+  <div class="ct" style="margin-top:.9rem;margin-bottom:8px">Scenario decomposition &mdash; contribution to annual loss</div>
+  <div class="scg" id="scg"></div>
+  <div class="exec-wrap" id="ew-op">
+    <div class="exec-shield" id="es-op">
+      <i class="ti ti-lock lk"></i>
+      <p class="lock-title">Executive recommendation</p>
+      <p class="lock-hint">This section contains board-level recommendations. Enter the password to unlock.</p>
+      <div class="lock-row"><input type="password" id="ep-op" placeholder="Password" onkeydown="if(event.key==='Enter')tryUnlock('op')"><button class="lock-btn" onclick="tryUnlock('op')">Unlock</button></div>
+      <p class="lock-err" id="ee-op"></p>
+    </div>
+    <div class="exec" id="ec-op">
+      <div class="exec-hd"><div class="exec-ic"><i class="ti ti-podium"></i></div><h3>Executive recommendation &mdash; operational resilience</h3></div>
+      <p>The simulation reveals that the compound scenario &mdash; simultaneous turbine failure and drought year &mdash; occurs in approximately <strong>1 in every 8 years</strong> at default parameters (P(failure) 58.6% &times; P(drought) 22% = 12.9% p.a.). This should be treated as a base-case stress scenario, not an extreme outlier. <strong>Preventive maintenance delivers the highest VaR reduction per franc spent</strong> among the three levers. The TSO standby contract is fastest to implement and most liquidity-efficient. The weather derivative is narrowest in scope but cheapest &mdash; a natural add-on once the first two are in place.</p>
+      <div class="exec-acts">
+        <div class="exec-act"><div class="exec-n">01</div><div class="exec-t">Approve preventive maintenance CAPEX</div><div class="exec-b">Board to authorise CHF 4M/yr programme for turbines exceeding 10 years. Simulation shows VaR saving of CHF 8&ndash;15M &mdash; a 2&ndash;4&times; return on spend.</div></div>
+        <div class="exec-act"><div class="exec-n">02</div><div class="exec-t">Negotiate TSO standby contract Q3 2026</div><div class="exec-b">Mandate Head of Asset Operations to agree a retainer with the neighbouring TSO by end Q3 2026. CHF 2.5M/yr replaces 35% of lost generation during any outage.</div></div>
+        <div class="exec-act"><div class="exec-n">03</div><div class="exec-t">Add weather derivative to 2027 hedging</div><div class="exec-b">CHF 1.8M premium covers 20% of drought revenue loss &mdash; small cost relative to the compound scenario impact and a natural complement to the TSO contract.</div></div>
+        <div class="exec-act"><div class="exec-n">04</div><div class="exec-t">Elevate compound scenario to Board stress-test</div><div class="exec-b">Add simultaneous turbine failure + drought as a named scenario in the annual Board Risk Committee stress-test. Present CVaR &mdash; not expected loss &mdash; as the basis for capital adequacy decisions.</div></div>
+      </div>
+      <div class="relock-bar"><button onclick="relock('op')"><i class="ti ti-lock" style="font-size:11px"></i> Re-lock</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function randn(){var u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function rexp(r){return-Math.log(1-Math.random())/r;}
+
+function sw(n,btn){
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.nav-tabs button').forEach(function(b){b.classList.remove('on')});
+  document.getElementById('pg-'+n).classList.add('on');btn.classList.add('on');
+  if(n==='mc'&&!mcCh)runMC();
+  if(n==='hg'&&!hgCh)runHG();
+  if(n==='op'&&!opCh)runOP();
+}
+
+var PW='Lutry2026';
+function tryUnlock(id){
+  var inp=document.getElementById('ep-'+id),err=document.getElementById('ee-'+id);
+  if(inp.value===PW){
+    document.getElementById('es-'+id).style.display='none';
+    document.getElementById('ec-'+id).style.display='block';
+    err.textContent='';
+  } else {
+    err.textContent='Incorrect password \u2014 please try again.';
+    inp.value='';inp.focus();
+  }
+}
+function relock(id){
+  document.getElementById('ec-'+id).style.display='none';
+  document.getElementById('es-'+id).style.display='flex';
+  var inp=document.getElementById('ep-'+id);if(inp)inp.value='';
+  var err=document.getElementById('ee-'+id);if(err)err.textContent='';
+}
+
+function buildHM(){
+  var grid=[[0,0,1,1,0],[0,1,1,1,1],[1,1,2,1,1],[0,1,2,2,1],[1,1,2,2,2]];
+  var val=[[0,0,1,1,2],[0,1,1,2,3],[1,1,2,3,3],[1,2,3,3,4],[2,3,3,4,4]];
+  var cls=['h0','h1','h2','h3','h4'];
+  var el=document.getElementById('hmap'),h='<div class="hm">';
+  h+='<div style="font-size:9px;color:var(--txt-m);writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:center">Likelihood &#8593;</div>';
+  for(var c=0;c<5;c++)h+='<div style="text-align:center;font-size:10px;color:var(--txt-m)">'+(5-c)+'</div>';
+  for(var r=4;r>=0;r--){h+='<div></div>';for(var cc=0;cc<5;cc++){var cnt=grid[r][cc];h+='<div class="hmc '+cls[val[r][cc]]+'" title="L'+(r+1)+'xI'+(cc+1)+': '+cnt+' risks">'+( cnt||'')+'</div>';}}
+  h+='<div></div>';for(var x=0;x<5;x++)h+='<div style="text-align:center;font-size:10px;color:var(--txt-m)">'+(x+1)+'</div>';
+  h+='<div></div><div style="grid-column:2/-1;text-align:center;font-size:9px;color:var(--txt-m);margin-top:2px">Impact &#8594;</div></div>';
+  el.innerHTML=h;
+}
+
+new Chart(document.getElementById('catCh'),{type:'doughnut',data:{labels:['Market','Operational','Regulatory','Cyber','Strategic'],datasets:[{data:[3,3,2,1,1],backgroundColor:['#2471a3','#0e8c7a','#c0392b','#7d3cbc','#6b6560'],borderWidth:2,borderColor:'#faf7f2'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}});
+new Chart(document.getElementById('ctrlCh'),{type:'line',data:{labels:['Q3-25','Q4-25','Q1-26','Q2-26'],datasets:[{label:'Effective',data:[69,71,75,78],borderColor:'#2471a3',backgroundColor:'rgba(36,113,163,.07)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#2471a3'},{label:'Ineffective',data:[31,29,25,22],borderColor:'#c0392b',backgroundColor:'rgba(192,57,43,.05)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#c0392b',borderDash:[4,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{callback:function(v){return v+'%'},font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}},x:{grid:{display:false},ticks:{font:{size:10}}}}}});
+
+var APPETITE=[
+  {l:'Market price risk',cur:82,lim:70,col:'#c0392b'},
+  {l:'Liquidity risk',cur:65,lim:60,col:'#c0392b'},
+  {l:'Cyber risk',cur:74,lim:65,col:'#c0392b'},
+  {l:'Regulatory risk',cur:58,lim:60,col:'#27ae60'},
+  {l:'Operational risk',cur:55,lim:65,col:'#27ae60'},
+  {l:'Strategic risk',cur:40,lim:55,col:'#27ae60'},
+];
+function buildAppetite(){
+  var el=document.getElementById('appetite-list');
+  el.innerHTML=APPETITE.map(function(a){
+    var pct=Math.min(a.cur,100),limPct=Math.min(a.lim,100);
+    var breach=a.cur>a.lim;
+    return '<div class="appetite-row"><div class="ap-label">'+a.l+'</div>'
+      +'<div class="ap-bar-wrap"><div class="ap-bar" style="width:'+pct+'%;background:'+(breach?'#c0392b':'#27ae60')+'"></div>'
+      +'<div class="ap-limit" style="left:'+limPct+'%"></div></div>'
+      +'<div class="ap-val" style="color:'+(breach?'#c0392b':'#27ae60')+'">'+(breach?'&#9650;':'')+a.cur+'%</div></div>';
+  }).join('');
+  var note=document.createElement('div');
+  note.style.cssText='font-size:10px;color:var(--txt-m);margin-top:7px';
+  note.innerHTML='&#9474; = appetite limit &nbsp;&nbsp; &#9650; = limit breached';
+  el.appendChild(note);
+}
+buildAppetite();
+
+function buildIC(){
+  var pairs=[
+    {a:'R-001 Market',b:'R-002 Cyber',why:'Trading system outage during a price spike amplifies P&L loss by 3&ndash;5&times;'},
+    {a:'R-002 Cyber',b:'R-004 Hydro',why:'SCADA compromise during asset outage removes remote dispatch fallback'},
+    {a:'R-004 Hydro',b:'R-001 Market',why:'Simultaneous generation loss and price drop compounds EBITDA impact'},
+    {a:'R-006 Geopolitical',b:'R-001 Market',why:'Sanctions or supply shock drives price volatility and liquidity squeeze together'},
+  ];
+  var el=document.getElementById('ic-map');
+  el.innerHTML=pairs.map(function(p){
+    return '<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;padding-bottom:8px;border-bottom:0.5px solid var(--bdr)">'
+      +'<div style="display:flex;align-items:center;gap:5px;flex-shrink:0">'
+      +'<span class="bx bc" style="font-size:9px">'+p.a+'</span>'
+      +'<i class="ti ti-arrows-exchange" style="font-size:12px;color:var(--pur-md)" aria-hidden="true"></i>'
+      +'<span class="bx bc" style="font-size:9px">'+p.b+'</span></div>'
+      +'<div style="font-size:11px;color:var(--txt-m);line-height:1.4">'+p.why+'</div></div>';
+  }).join('');
+}
+buildIC();
+
+var RISKS=[
+  {id:'R-001',d:'Market &amp; liquidity risk',cat:'Market',l:4,i:5,ctrl:68,own:'MT',st:'open',lv:'critical',vel:'Hours',vel_c:'vel-h',ic:'R-002, R-004',
+   w:[{t:'Extreme intraday price spike triggers margin call cascade',mt:'Scenario analysis + VaR stress test',mc:'bi',
+       a:'Prob: High (4/5) &middot; Impact: Critical (5/5) &middot; Residual: 18. VaR threshold CHF 50M; stress test shows CHF 68M under 3-sigma gas shock. Liquidity facility headroom CHF 120M.',
+       m:['Recalibrate VaR model using 2021&ndash;2022 crisis data as stress reference','Set automated margin-call alert at 80% of limit triggering intraday de-risking','Maintain minimum CHF 80M undrawn liquidity facility; review headroom weekly with CFO']},
+      {t:'Prolonged low-price environment erodes asset economics and liquidity',mt:'Monte Carlo simulation &mdash; 3-yr revenue',mc:'bp',
+       a:'Prob: Medium (3/5) &middot; Impact: High (4/5) &middot; Residual: 12. Breakeven CHF 42/MWh; 18m forward curve at CHF 38/MWh. Cash burn at CHF 5M/month below breakeven.',
+       m:['Hedge minimum 60% of production 12 months forward via baseload contracts','Activate structured solutions desk for price-floor structures on key assets','Trigger liquidity contingency plan if undrawn facility falls below CHF 50M']}]},
+  {id:'R-002',d:'Cyber &amp; OT resilience',cat:'Cyber',l:4,i:5,ctrl:55,own:'JS',st:'open',lv:'critical',vel:'Hours',vel_c:'vel-h',ic:'R-001, R-004',
+   w:[{t:'Ransomware propagates from IT into OT/SCADA environment',mt:'FAIR model + MITRE ATT&CK mapping',mc:'bc',
+       a:'Prob: High (4/5) &middot; Impact: Critical (5/5) &middot; Residual: 16. FAIR ALE: CHF 22M. Two lateral-movement pathways in pentest. OT patch compliance 71% vs 85% target. MTTD currently 9 days.',
+       m:['Implement IT/OT network segmentation with unidirectional gateways by Q3 2026','Deploy OT-specific EDR (Claroty/Dragos) on all SCADA endpoints within 90 days','Move cyber incident surveillance to daily automated alerts; target MTTD &lt;24h']},
+      {t:'Supply-chain compromise via third-party SCADA vendor',mt:'TPRM assessment + IEC 62443 gap analysis',mc:'bm',
+       a:'Prob: Medium (3/5) &middot; Impact: Critical (5/5) &middot; Residual: 11. 4 SCADA vendors have privileged remote access; only 1 reviewed annually. Last assessment: 2023.',
+       m:['Mandate annual ISO 27001/IEC 62443 evidence from all OT vendors','Implement just-in-time PAM for all vendor remote sessions','Add right-to-audit and breach notification clauses in all OT vendor MSAs']}]},
+  {id:'R-003',d:'Regulatory non-compliance',cat:'Regulatory',l:3,i:5,ctrl:65,own:'KL',st:'open',lv:'critical',vel:'Weeks',vel_c:'vel-m',ic:'R-001',
+   w:[{t:'Late trade reporting triggers REMIT investigation',mt:'Process FMEA on reporting workflow',mc:'bt',
+       a:'Prob: Medium (3/5) &middot; Impact: High (5/5) &middot; Residual: 14. Manual T+2 step is single point of failure. One near-miss Q2 2026. NIS2 and DORA reporting obligations also apply.',
+       m:['Automate T+1 reporting pipeline via API integration with regulatory portal by Q3 2026','Daily automated reconciliation between trade blotter and submission log','Appoint dedicated compliance officer; monthly reporting to Head of ERM']},
+      {t:'Insider trading allegation from undisclosed inside information',mt:'Control self-assessment + regulatory scenario',mc:'bt',
+       a:'Prob: Low (2/5) &middot; Impact: Critical (5/5) &middot; Residual: 10. Inside-info register reviewed semi-annually. 3 staff &gt;90 days overdue on mandatory training.',
+       m:['Enforce training completion within 30 days; block trading access until complete','Automate inside-information register alerts on material non-public info entry','Annual mock-investigation drill with external legal counsel']}]},
+  {id:'R-004',d:'Hydro asset availability',cat:'Operational',l:3,i:4,ctrl:80,own:'PD',st:'open',lv:'high',vel:'Days',vel_c:'vel-m',ic:'R-001, R-002',
+   w:[{t:'Turbine failure at major run-of-river plant during peak demand',mt:'Bowtie analysis + asset FMEA',mc:'bm',
+       a:'Prob: Medium (3/5) &middot; Impact: High (4/5) &middot; Residual: 8. MTBF 8 years; oldest unit at 11 years. Replacement lead-time 14 months. P(compound with drought) ~13% p.a.',
+       m:['Advance overhaul schedule for turbines &gt;10 years; complete by end of 2026','Establish standby capacity agreement with neighbouring TSO as backup','Activate peaker dispatch protocol within 4h of outage trigger']},
+      {t:'Prolonged drought reduces inflow below viable generation level',mt:'Climate scenario analysis (RCP 4.5 / 8.5)',mc:'bt',
+       a:'Prob: Increasing (3/5) &middot; Impact: High (4/5) &middot; Residual: 9. 2022 drought cut output 22%. RCP 8.5 projects 15% structural inflow reduction by 2035.',
+       m:['Purchase precipitation-linked weather derivatives hedging 20% of annual revenue','Update 5-year generation plan with climate-adjusted inflow scenarios H2 2026','Engage regulator on long-term water rights renewal to protect operating licences']}]},
+  {id:'R-005',d:'Liquidity &amp; treasury risk',cat:'Market',l:3,i:4,ctrl:70,own:'MT',st:'open',lv:'high',vel:'Hours',vel_c:'vel-h',ic:'R-001, R-006',
+   w:[{t:'Simultaneous margin calls exhaust liquidity facility headroom',mt:'Liquidity stress test + cash flow at risk',mc:'bi',
+       a:'Prob: Medium (3/5) &middot; Impact: High (4/5) &middot; Residual: 9. Peak margin call scenario: CHF 85M in 48h. Current undrawn facility: CHF 120M. Buffer: CHF 35M &mdash; insufficient under 3-sigma price move.',
+       m:['Increase committed liquidity facility to CHF 200M at next banking review','Maintain CHF 30M minimum cash reserve; automate daily treasury dashboard alert','Include liquidity stress scenario in quarterly Board risk report with waterfall chart']},
+      {t:'Collateral posting requirement triggers covenant breach',mt:'Covenant sensitivity analysis',mc:'bi',
+       a:'Prob: Low (2/5) &middot; Impact: High (4/5) &middot; Residual: 7. Three bond covenants include net-debt/EBITDA triggers at 3.5&times;. Current ratio: 2.8&times;. A 20% EBITDA decline triggers review.',
+       m:['Model covenant headroom monthly under base, stress, and severe stress scenarios','Establish pre-agreed covenant waiver mechanism with lender group as contingency','Include covenant sensitivity in annual investor relations stress disclosure']}]},
+  {id:'R-006',d:'Geopolitical &amp; sanctions risk',cat:'Market',l:3,i:4,ctrl:65,own:'KL',st:'open',lv:'high',vel:'Days',vel_c:'vel-m',ic:'R-001, R-005',
+   w:[{t:'Sanctions on key energy counterparty trigger forced position unwind',mt:'Geopolitical stress scenario + sanctions screening',mc:'bm',
+       a:'Prob: Medium (3/5) &middot; Impact: High (4/5) &middot; Residual: 9. 3 counterparties flagged in enhanced due diligence as operating in sanctioned jurisdictions. Forced unwind cost estimated CHF 15&ndash;40M.',
+       m:['Implement daily automated OFAC/EU sanctions screening on all counterparties','Reduce exposure to any counterparty with sanctions flag to zero within 48h of alert','Legal to review all master trading agreements for sanctions termination clauses by Q3 2026']},
+      {t:'Abrupt energy supply disruption from geopolitical escalation',mt:'Supply chain risk assessment + scenario planning',mc:'bm',
+       a:'Prob: Medium (3/5) &middot; Impact: High (4/5) &middot; Residual: 9. 15% import-dependent on single-origin supply. Emergency protocol activates day 10 of disruption.',
+       m:['Diversify procurement: increase alternative-source contracts to 40% of portfolio by EOY','Pre-position 30-day strategic reserve at storage before winter 2026','Establish demand-response curtailment agreements with major industrial clients']}]},
+  {id:'R-007',d:'Business continuity &amp; operational resilience',cat:'Operational',l:3,i:4,ctrl:58,own:'CTO',st:'open',lv:'high',vel:'Hours',vel_c:'vel-h',ic:'R-002, R-004',
+   w:[{t:'Trading platform outage during active market session exceeds MTPD',mt:'BIA + RTO/RPO analysis (ISO 22301)',mc:'bi',
+       a:'Prob: Medium (3/5) &middot; Impact: High (4/5) &middot; Residual: 10. MTPD: 4 hours. Last DR test: 18 months ago. No validated RTO. Estimated mark-to-market loss CHF 3&ndash;8M per day of disruption.',
+       m:['Execute full DR failover test for trading platform in Q3 2026; document RTO','Deploy read-only position mirror for emergency manual risk management during outage','Monthly DR test of trading failover to secondary datacenter; report results to ERM']},
+      {t:'OT/SCADA disruption with no documented recovery plan',mt:'BCM gap analysis + DORA Article 11',mc:'bt',
+       a:'Prob: Medium (3/5) &middot; Impact: High (4/5) &middot; Residual: 10. MTPD: 2 hours. No BCP documented for OT/SCADA. DORA Article 11 and NIS2 compliance gap. Estimated financial impact CHF 5&ndash;15M/day.',
+       m:['CISO to document OT/SCADA BCP by end Q3 2026 &mdash; prerequisite for September tabletop','Establish crisis management team with clear RACI for OT disruption scenarios','Conduct OT-specific tabletop exercise Q3 2026; remediate findings within 60 days']}]},
+  {id:'R-008',d:'People, conduct &amp; key-person risk',cat:'Strategic',l:2,i:4,ctrl:60,own:'HR',st:'open',lv:'high',vel:'Days',vel_c:'vel-m',ic:'R-001',
+   w:[{t:'Sudden departure of senior traders during active hedging campaign',mt:'Talent risk assessment + succession readiness scoring',mc:'bg',
+       a:'Prob: Low-Medium (2/5) &middot; Impact: High (4/5) &middot; Residual: 8. 3 senior traders flagged as flight risk. No documented succession for Head of Gas Trading. Single-trader VaR concentration.',
+       m:['Complete succession plans for all senior trading roles by Q3 2026','Present retention packages for top-3 flight-risk individuals to CHRO within 30 days','Cross-train 2 mid-level traders on desk-wide book management to reduce concentration']},
+      {t:'Undisclosed conflicts of interest or misconduct leading to rogue trading',mt:'Three Lines of Defence + Internal Audit trade surveillance',mc:'bp',
+       a:'Prob: Very low (1/5) &middot; Impact: Critical (5/5) &middot; Residual: 8. Surveillance reviewed monthly (target: daily). 2 staff have undisclosed external interests. Misconduct culture risk not formally assessed.',
+       m:['Move trade surveillance to daily automated alert with immediate escalation protocol','Enforce annual conflicts-of-interest disclosure; unannounced IA desk review Q3 2026','Commission conduct risk culture assessment with external support by Q4 2026']}]},
+  {id:'R-009',d:'CO\u2082 &amp; environmental regulatory risk',cat:'Regulatory',l:2,i:3,ctrl:68,own:'KL',st:'open',lv:'medium',vel:'Months',vel_c:'vel-l',ic:'R-001',
+   w:[{t:'ETS Phase 5 free-allocation cuts strand thermal asset economics',mt:'Carbon cost pass-through + regulatory scenario',mc:'bm',
+       a:'Prob: Medium (2/5) &middot; Impact: Medium (3/5) &middot; Residual: 5. Phase 5 allocation to fall 48%. Carbon cost CHF 68/tCO\u2082; thermal breakeven CHF 55/tCO\u2082.',
+       m:['Model asset NPV under CHF 80/100/120 per tCO\u2082 scenarios; present to ExCo H2 2026','Procure ETS allowances forward for 2027\u20132028 vintage before Phase 5 announcement','Evaluate early retirement vs clean-fuel conversion for highest-emitting units']},
+      {t:'CO\u2082 Act revision imposes mandatory domestic offset requirements',mt:'Compliance gap analysis + materiality assessment',mc:'bp',
+       a:'Prob: Low (2/5) &middot; Impact: Medium (3/5) &middot; Residual: 5. Draft proposes 20% mandatory domestic offsets for large Scope 1 emitters.',
+       m:['Submit industry position paper to regulatory consultation by Q3 2026','Inventory domestic offset pipeline; target 30% domestic offset by 2028','Update sustainability report to align with IFRS S2/TCFD revised framework']}]},
+  {id:'R-010',d:'Model &amp; AI risk',cat:'Operational',l:2,i:3,ctrl:62,own:'CTO',st:'open',lv:'medium',vel:'Days',vel_c:'vel-m',ic:'R-001',
+   w:[{t:'VaR model miscalibration leads to systematic under-hedging',mt:'Model risk assessment + backtesting framework',mc:'bi',
+       a:'Prob: Low-Medium (2/5) &middot; Impact: Medium (3/5) &middot; Residual: 5. VaR model last independently validated 2022. Backtesting coverage 60% of trading book. No model risk policy in place.',
+       m:['Commission independent model validation for VaR and Monte Carlo tools by Q4 2026','Implement formal model risk governance policy with approval, monitoring, and retirement lifecycle','Expand backtesting coverage to 95% of trading book; report exceptions weekly to CRO']},
+      {t:'Algorithmic trading model makes erroneous decisions during market stress',mt:'AI risk assessment + algorithm audit',mc:'bp',
+       a:'Prob: Low (2/5) &middot; Impact: Medium (3/5) &middot; Residual: 5. 3 trading algorithms in production with no formal audit since deployment. No kill-switch procedure documented.',
+       m:['Audit all production trading algorithms against EU AI Act requirements by Q1 2027','Implement hard kill-switch with manual override protocol for all algorithmic positions','Establish algorithm performance monitoring dashboard; alert if deviation exceeds 2 sigma']}]}
+];
+var OC={MT:'#0a3060',JS:'#3d1c6e',KL:'#7a2e00',PD:'#0a4040',HR:'#3d3028',CTO:'#0a4040'};
+var OB={MT:'#e8f4fb',JS:'#f0eafc',KL:'#fce8e8',PD:'#e0f5f2',HR:'#f5f3ef',CTO:'#e0f5f2'};
+var LB={critical:'bc',high:'bh',medium:'bm',low:'bl'};
+var SB={open:'bh',mitigating:'bm',accepted:'bi',closed:'bl'};
+function rv2(r){return r>=14?'bc':r>=9?'bh':r>=6?'bm':'bl'}
+var rFilt='all',openId=null;
+function wcH(r){
+  var h='<div style="font-size:9px;font-weight:500;color:var(--txt-m);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Top-2 WCGW &mdash; '+r.id+': '+r.d+'</div><div class="wg">';
+  r.w.forEach(function(w,i){
+    h+='<div class="wc"><div class="wlb"><span style="display:inline-flex;width:14px;height:14px;border-radius:50%;background:var(--red-lt);color:var(--red-dk);font-size:9px;font-weight:500;align-items:center;justify-content:center">'+(i+1)+'</span>&nbsp;Scenario</div>';
+    h+='<div class="wt">'+w.t+'</div><span class="bx '+w.mc+'" style="margin-bottom:6px;display:inline-flex;font-size:10px">'+w.mt+'</span>';
+    h+='<div class="wlb">Assessment</div><div class="wa">'+w.a+'</div><div class="wlb">Mitigating actions</div>';
+    w.m.forEach(function(a,j){h+='<div class="as"><div class="sn">'+(j+1)+'</div><div class="st">'+a+'</div></div>';});
+    h+='</div>';
+  });
+  return h+'</div>';
+}
+function rnReg(){
+  var list=rFilt==='all'?RISKS:RISKS.filter(function(r){return r.lv===rFilt});
+  var tb=document.getElementById('rtb');tb.innerHTML='';
+  list.forEach(function(r){
+    var inh=r.l*r.i,res=Math.round(inh*(1-r.ctrl/100));
+    var pc=r.ctrl,pco=pc>=80?'#27ae60':pc>=65?'#c87d00':'#c0392b';
+    var mr=document.createElement('tr');mr.className='mr';
+    mr.innerHTML='<td style="font-size:10px;color:var(--txt-m)">'+r.id+'</td>'
+      +'<td style="font-size:11px;font-weight:500">'+r.d+'</td>'
+      +'<td><span class="bx bg">'+r.cat+'</span></td>'
+      +'<td style="text-align:center;font-size:11px">'+r.l+'</td>'
+      +'<td style="text-align:center;font-size:11px">'+r.i+'</td>'
+      +'<td><span class="bx '+LB[r.lv]+'">'+inh+'</span></td>'
+      +'<td><div style="display:flex;align-items:center;gap:4px"><div class="pb"><div class="pf" style="width:'+pc+'%;background:'+pco+'"></div></div><span style="font-size:10px;color:var(--txt-m)">'+pc+'%</span></div></td>'
+      +'<td><span class="bx '+rv2(res)+'">'+res+'</span></td>'
+      +'<td><span class="own" style="background:'+(OB[r.own]||'#f5f3ef')+';color:'+(OC[r.own]||'#6b6560')+'">'+r.own+'</span></td>'
+      +'<td><span class="bx '+(SB[r.st]||'bg')+'">'+r.st+'</span></td>'
+      +'<td><span class="vel '+r.vel_c+'">'+r.vel+'</span></td>'
+      +'<td style="font-size:10px;color:var(--txt-m)">'+r.ic+'</td>'
+      +'<td><button class="eb" data-id="'+r.id+'"><i class="ti ti-chevron-down" style="font-size:11px"></i> WCGW</button></td>';
+    tb.appendChild(mr);
+    var dr=document.createElement('tr');dr.className='wr';dr.id='wr-'+r.id;dr.style.display='none';
+    var dc=document.createElement('td');dc.colSpan=13;
+    var wi=document.createElement('div');wi.className='wi';wi.innerHTML=wcH(r);
+    dc.appendChild(wi);dr.appendChild(dc);tb.appendChild(dr);
+    mr.addEventListener('click',function(){tog(r.id,mr)});
+  });
+}
+function tog(id,row){
+  var t=document.getElementById('wr-'+id),bi=row.querySelector('.eb i');
+  if(openId&&openId!==id){var p=document.getElementById('wr-'+openId);if(p)p.style.display='none';var pb=document.querySelector('[data-id="'+openId+'"]');if(pb)pb.querySelector('i').className='ti ti-chevron-down';}
+  if(t.style.display==='table-row'){t.style.display='none';bi.className='ti ti-chevron-down';openId=null;}
+  else{t.style.display='table-row';bi.className='ti ti-chevron-up';openId=id;}
+}
+function flt(btn,f){rFilt=f;openId=null;document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('on')});btn.classList.add('on');rnReg();}
+
+var BCM_SVCS=[
+  {svc:'Energy trading & position mgmt',rto:'4h',rpo:'1h',mtpd:'4h',bcp:true,tested:false,rag:'r',risk:'R-001'},
+  {svc:'OT/SCADA asset dispatch',rto:'2h',rpo:'30m',mtpd:'2h',bcp:false,tested:false,rag:'r',risk:'R-002'},
+  {svc:'Regulatory reporting (REMIT)',rto:'8h',rpo:'4h',mtpd:'24h',bcp:true,tested:true,rag:'a',risk:'R-003'},
+  {svc:'Treasury & collateral mgmt',rto:'8h',rpo:'2h',mtpd:'8h',bcp:true,tested:true,rag:'a',risk:'R-005'},
+  {svc:'HR & payroll systems',rto:'24h',rpo:'24h',mtpd:'72h',bcp:true,tested:true,rag:'g',risk:''},
+  {svc:'Gas supply & fuel logistics',rto:'48h',rpo:'24h',mtpd:'48h',bcp:false,tested:false,rag:'a',risk:'R-006'},
+];
+function buildBCM(){
+  var el=document.getElementById('bcm-services');
+  el.innerHTML=BCM_SVCS.map(function(s){
+    var ragColor={r:'#c0392b',a:'#c87d00',g:'#27ae60'}[s.rag];
+    var ragBg={r:'#fce8e8',a:'#fef3dc',g:'#e8f8ed'}[s.rag];
+    var ragLbl={r:'Critical gap',a:'Partial coverage',g:'Tested & ready'}[s.rag];
+    return '<div class="bcm-card">'
+      +'<div class="bcm-svc">'+s.svc+'</div>'
+      +'<div class="bcm-meta">RTO target: '+s.rto+' &nbsp;|&nbsp; RPO: '+s.rpo+'</div>'
+      +'<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">'
+      +'<span class="bx" style="background:'+ragBg+';color:'+ragColor+'">'+ragLbl+'</span>'
+      +(s.bcp?'<span class="bx bl">BCP documented</span>':'<span class="bx bc">No BCP</span>')
+      +(s.tested?'<span class="bx bl">Tested</span>':'<span class="bx bm">Not tested</span>')
+      +(s.risk?'<span class="bx bi">'+s.risk+'</span>':'')
+      +'</div>'
+      +'<div style="font-size:10px;color:var(--txt-m)">MTPD: '+s.mtpd+'</div>'
+      +'</div>';
+  }).join('');
+
+  new Chart(document.getElementById('bcmRadar'),{
+    type:'radar',
+    data:{
+      labels:['Context & scope','Leadership & policy','Risk assessment','BCM strategy','BCM plans','Exercising & testing','Continual improvement'],
+      datasets:[{label:'Current maturity',data:[75,65,80,60,55,35,40],borderColor:'#2471a3',backgroundColor:'rgba(36,113,163,.12)',pointBackgroundColor:'#2471a3',pointRadius:4,tension:.2},
+                {label:'Target (ISO 22301)',data:[100,100,100,100,100,100,100],borderColor:'rgba(192,57,43,.4)',backgroundColor:'rgba(192,57,43,.04)',pointBackgroundColor:'rgba(192,57,43,.4)',pointRadius:3,tension:.2,borderDash:[4,3]}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:100,ticks:{stepSize:25,font:{size:9},backdropColor:'transparent',callback:function(v){return v+'%'}},grid:{color:'rgba(0,0,0,.08)'},pointLabels:{font:{size:10}}}}}
+  });
+
+  var rtoEl=document.getElementById('rto-list');
+  var svcs=[
+    {n:'OT/SCADA dispatch',tgt:2,curr:8,u:'h'},
+    {n:'Energy trading',tgt:4,curr:6,u:'h'},
+    {n:'Treasury & collateral',tgt:8,curr:10,u:'h'},
+    {n:'REMIT reporting',tgt:8,curr:12,u:'h'},
+    {n:'HR & payroll',tgt:24,curr:24,u:'h'},
+    {n:'Gas supply logistics',tgt:48,curr:36,u:'h'},
+  ];
+  rtoEl.innerHTML=svcs.map(function(s){
+    var breach=s.curr>s.tgt;
+    var pct=Math.min(s.curr/Math.max(s.tgt,s.curr)*100,100);
+    var col=breach?'#c0392b':'#27ae60';
+    return '<div style="margin-bottom:10px">'
+      +'<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt-m);margin-bottom:3px">'
+      +'<span>'+s.n+'</span>'
+      +'<span style="color:'+col+';font-weight:500">'+(breach?'&#9650;':'')+s.curr+s.u+' vs '+s.tgt+s.u+' target</span></div>'
+      +'<div class="rto-bar"><div class="rto-fill" style="width:'+pct+'%;background:'+col+'"></div></div></div>';
+  }).join('');
+}
+
+var aPlug={id:'vl',afterDraw:function(ch){
+  if(!ch._L)return;
+  var ctx=ch.ctx,xs=ch.scales.x,ys=ch.scales.y;
+  ch._L.forEach(function(pr,idx){
+    var x=xs.getPixelForValue(pr[0]);if(!x||x<xs.left||x>xs.right)return;
+    ctx.save();ctx.strokeStyle=pr[1];ctx.lineWidth=2;ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.moveTo(x,ys.top);ctx.lineTo(x,ys.bottom);ctx.stroke();
+    var lw=ctx.measureText(pr[2]).width+10,yp=ys.top+14+idx*17;
+    ctx.fillStyle=pr[3];ctx.fillRect(x-lw/2,yp-9,lw,15);
+    ctx.fillStyle=pr[1];ctx.font='bold 10px DM Sans,sans-serif';ctx.textAlign='center';
+    ctx.fillText(pr[2],x,yp+3);ctx.restore();
+  });
+}};
+Chart.register(aPlug);
+
+var mcCh=null;
+function runMC(){
+  var bp=+document.getElementById('ms-sp').value,dr=+document.getElementById('ms-dr').value/100,vl=+document.getElementById('ms-vl').value/100;
+  var gn=(+document.getElementById('ms-gn').value)*.8+.8,iv=+document.getElementById('ms-iv').value/100,om=+document.getElementById('ms-om').value;
+  document.getElementById('mv-sp').textContent=bp;document.getElementById('mv-dr').textContent=document.getElementById('ms-dr').value;
+  document.getElementById('mv-vl').textContent=document.getElementById('ms-vl').value;document.getElementById('mv-gn').textContent=gn.toFixed(1);
+  document.getElementById('mv-iv').textContent=document.getElementById('ms-iv').value;document.getElementById('mv-om').textContent=om;
+  var N=5000,res=[];
+  for(var i=0;i<N;i++){var tot=0,p=bp;for(var y=0;y<3;y++){p=p*Math.exp((dr-.5*vl*vl)+vl*randn());var v2=Math.max(.3,1+iv*randn())*gn*(1-(0.04+0.02*Math.random()));tot+=p*v2*1000-om;}res.push(tot/3);}
+  res.sort(function(a,b){return a-b});
+  var mn2=res.reduce(function(s,v){return s+v},0)/N,vi=Math.floor(N*.05),var95=res[vi],cvar=res.slice(0,vi).reduce(function(s,v){return s+v},0)/vi,negP=res.filter(function(v){return v<0}).length/N*100;
+  document.getElementById('mk-mean').textContent='CHF '+Math.round(mn2)+'M';
+  document.getElementById('mk-var').textContent='CHF '+Math.round(var95)+'M';
+  document.getElementById('mk-cvar').textContent='CHF '+Math.round(cvar)+'M';
+  document.getElementById('mk-neg').textContent=negP.toFixed(1)+'%';
+  var minR=res[0],maxR=res[N-1],bins=50,bw=(maxR-minR)/bins,lbs=[],cu=new Array(bins).fill(0);
+  for(var b=0;b<bins;b++)lbs.push(Math.round(minR+b*bw));
+  res.forEach(function(v){cu[Math.min(Math.floor((v-minR)/bw),bins-1)]++;});
+  var vbin=Math.min(Math.floor((var95-minR)/bw),bins-1);
+  var bgc=cu.map(function(_,i){return i<=vbin?'rgba(192,57,43,.65)':'rgba(36,113,163,.65)'});
+  var L=[[Math.round(var95),'#c87d00','VaR 95%','#fde7b0'],[Math.round(cvar),'#8b1a1a','CVaR 95%','#f9c8c8']];
+  if(mcCh){mcCh.data.labels=lbs;mcCh.data.datasets[0].data=cu;mcCh.data.datasets[0].backgroundColor=bgc;mcCh._L=L;mcCh.update('none');}
+  else{mcCh=new Chart(document.getElementById('mcCh'),{type:'bar',data:{labels:lbs,datasets:[{data:cu,backgroundColor:bgc,borderWidth:0,barPercentage:1,categoryPercentage:1}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:function(it){return'EBITDA ~CHF '+it[0].label+'M'},label:function(it){return it.raw+' sims ('+Math.round(it.raw/N*100)+'%)'}}}},scales:{x:{type:'linear',title:{display:true,text:'Annual EBITDA (CHF M)',font:{size:10}},ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}}}}});mcCh._L=L;}
+  var col=negP>20?'#8b1a1a':negP>8?'#7a4a00':'#1a5c2a';
+  document.getElementById('mc-interp').innerHTML='<strong style="color:'+col+'">Loss probability: '+negP.toFixed(1)+'%.</strong> Expected annual EBITDA: CHF '+Math.round(mn2)+'M. VaR 95%: CHF '+Math.round(var95)+'M. CVaR 95%: CHF '+Math.round(cvar)+'M.'+(bp<42?' Base price is below the CHF 42/MWh breakeven &mdash; immediate hedging action is warranted.':' Base price provides margin above breakeven. A 60% forward hedge would further reduce tail exposure.');
+}
+['ms-sp','ms-dr','ms-vl','ms-gn','ms-iv','ms-om'].forEach(function(id){document.getElementById(id).addEventListener('input',runMC);});
+
+var hgCh=null;
+function runHG(){
+  var sp=+document.getElementById('hs-sp').value,vl=+document.getElementById('hs-vl').value/100,dr=+document.getElementById('hs-dr').value/100;
+  var fp=+document.getElementById('hs-fp').value,hr=+document.getElementById('hs-hr').value/100,hc=+document.getElementById('hs-hc').value;
+  document.getElementById('hv-sp').textContent=sp;document.getElementById('hv-vl').textContent=document.getElementById('hs-vl').value;
+  document.getElementById('hv-dr').textContent=document.getElementById('hs-dr').value;document.getElementById('hv-fp').textContent=fp;
+  document.getElementById('hv-hr').textContent=document.getElementById('hs-hr').value;document.getElementById('hv-hc').textContent=hc;
+  var N=5000,gn=3.2,iv=.18,uh=[],hd=[];
+  for(var i=0;i<N;i++){var tu=0,th=0,p=sp;for(var y=0;y<3;y++){p=p*Math.exp((dr-.5*vl*vl)+vl*randn());var av=Math.max(.3,1+iv*randn())*gn*(1-(0.04+0.02*Math.random()));var hv=Math.min(gn*hr,av);tu+=p*av*1000-28;th+=fp*hv*1000+p*(av-hv)*1000-28-hc;}uh.push(tu/3);hd.push(th/3);}
+  uh.sort(function(a,b){return a-b});hd.sort(function(a,b){return a-b});
+  function st(a){var n=a.length,vi=Math.floor(n*.05);return{var95:a[vi],negP:a.filter(function(v){return v<0}).length/n*100,p95:a[Math.floor(n*.95)]};}
+  var su=st(uh),sh=st(hd),imp=sh.var95-su.var95,uc=su.p95-sh.p95;
+  document.getElementById('hk-vu').textContent='CHF '+Math.round(su.var95)+'M';
+  document.getElementById('hk-vh').textContent='CHF '+Math.round(sh.var95)+'M';
+  document.getElementById('hk-pu').textContent=su.negP.toFixed(1)+'%';
+  document.getElementById('hk-ph').textContent=sh.negP.toFixed(1)+'%';
+  var impEl=document.getElementById('hk-im');impEl.textContent=(imp>=0?'+':'')+Math.round(imp)+'M';impEl.style.color=imp>0?'var(--grn-md)':'var(--red-md)';
+  document.getElementById('hk-uc').textContent=Math.round(uc)+'M';
+  var all=uh.concat(hd),minA=Math.min.apply(null,all),maxA=Math.max.apply(null,all),bins=60,bw=(maxA-minA)/bins,lbs=[],cb=new Array(bins).fill(0),cm=new Array(bins).fill(0);
+  for(var b=0;b<bins;b++)lbs.push(Math.round(minA+b*bw));
+  uh.forEach(function(v){cb[Math.min(Math.floor((v-minA)/bw),bins-1)]++;});
+  hd.forEach(function(v){cm[Math.min(Math.floor((v-minA)/bw),bins-1)]++;});
+  var L2=[[Math.round(su.var95),'#8b1a1a','VaR un-','#f9c8c8'],[Math.round(sh.var95),'#0a4040','VaR hed-','#e0f5f2']];
+  if(hgCh){hgCh.data.labels=lbs;hgCh.data.datasets[0].data=cb;hgCh.data.datasets[1].data=cm;hgCh._L=L2;hgCh.update('none');}
+  else{hgCh=new Chart(document.getElementById('hgCh'),{type:'bar',data:{labels:lbs,datasets:[{label:'Unhedged',data:cb,backgroundColor:'rgba(192,57,43,.4)',borderWidth:0,barPercentage:1,categoryPercentage:1},{label:'Hedged',data:cm,backgroundColor:'rgba(14,140,122,.55)',borderWidth:0,barPercentage:1,categoryPercentage:1}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:function(it){return'EBITDA ~CHF '+it[0].label+'M'}}}},scales:{x:{type:'linear',title:{display:true,text:'Annual EBITDA (CHF M)',font:{size:10}},ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}}}}});hgCh._L=L2;}
+  var col=imp>0?'#0a4040':'#8b1a1a';
+  document.getElementById('hg-interp').innerHTML='<strong style="color:'+col+'">VaR improvement: '+(imp>=0?'+':'')+Math.round(imp)+'M CHF.</strong> Hedged loss probability: '+sh.negP.toFixed(1)+'% vs '+su.negP.toFixed(1)+'% unhedged. Upside foregone at P95: CHF '+Math.round(uc)+'M.'+(fp<sp?' Forward price below spot &mdash; hedge locks in below-market prices. Review hedge timing.':' Forward price above spot &mdash; hedge both protects downside and adds expected value on the locked tranche.');
+}
+['hs-sp','hs-vl','hs-dr','hs-fp','hs-hr','hs-hc'].forEach(function(id){document.getElementById(id).addEventListener('input',runHG);});
+
+var opCh=null,opM={mt:false,ts:false,wd:false},opBV=null;
+function tmit(k){opM[k]=!opM[k];document.getElementById('tog-'+k).classList.toggle('on',opM[k]);runOP();}
+function runOP(){
+  var fl=+document.getElementById('os-fl').value,mt=+document.getElementById('os-mt').value;
+  var rc=+document.getElementById('os-rc').value,ec=+document.getElementById('os-ec').value;
+  var rv=+document.getElementById('os-rv').value,dp=+document.getElementById('os-dp').value/100;
+  var di=+document.getElementById('os-di').value/100,dv=+document.getElementById('os-dv').value/100;
+  document.getElementById('ov-fl').textContent=fl;document.getElementById('ov-mt').textContent=mt;
+  document.getElementById('ov-rc').textContent=rc;document.getElementById('ov-ec').textContent=ec;
+  document.getElementById('ov-rv').textContent=rv;document.getElementById('ov-dp').textContent=Math.round(dp*100);
+  document.getElementById('ov-di').textContent=Math.round(di*100);document.getElementById('ov-dv').textContent=Math.round(dv*100);
+  var mc=(opM.mt?4:0)+(opM.ts?2.5:0)+(opM.wd?1.8:0);
+  document.getElementById('ok-mc').textContent=mc>0?'CHF '+mc.toFixed(1)+'M':'CHF 0';
+  var eMT=opM.mt?mt/(1-.4):mt,eRC=opM.mt?Math.max(2,rc-3):rc,tR=opM.ts?.35:0,dC=opM.wd?.2:0;
+  var N=5000,bL=[],mL=[];
+  for(var i=0;i<N;i++){
+    var tb=0,tm=0;
+    for(var y=0;y<3;y++){
+      var nF=0,t=0;while(true){var g=rexp(fl/mt);t+=g;if(t>1)break;nF++;}
+      var nFm=0,t2=0;while(true){var g2=rexp(fl/eMT);t2+=g2;if(t2>1)break;nFm++;}
+      var fB=0,fM=0;
+      for(var f=0;f<nF;f++){var of=Math.min(1,(rc/12)*(1+.3*Math.abs(randn())))/fl;fB+=rv*of+ec*(.8+.4*Math.random());}
+      for(var f2=0;f2<nFm;f2++){var ofm=Math.min(1,(eRC/12)*(1+.3*Math.abs(randn())))/fl;fM+=rv*ofm*(1-tR)+ec*(.7+.4*Math.random());}
+      var iD=Math.random()<dp,dB=0,dM=0;
+      if(iD){var sv=Math.max(.02,di+dv*randn());dB=rv*sv;dM=rv*sv*(1-dC);if(nF>0){fB*=1.15;fM*=1.1;}}
+      tb+=(fB+dB)/3;tm+=(fM+dM+mc)/3;
+    }
+    bL.push(tb);mL.push(tm);
+  }
+  bL.sort(function(a,b){return a-b});mL.sort(function(a,b){return a-b});
+  function st2(a){var n=a.length,vi=Math.floor(n*.95);return{mn:a.reduce(function(s,v){return s+v},0)/n,v95:a[vi],cv:a.slice(vi).reduce(function(s,v){return s+v},0)/(n-vi),p20:a.filter(function(v){return v>20}).length/n*100};}
+  var sb=st2(bL),sm=st2(mL),anyM=opM.mt||opM.ts||opM.wd;
+  if(!anyM)opBV=sb.v95;
+  var vs=opBV!==null?(opBV-sm.v95):0;
+  document.getElementById('ok-mn').textContent='CHF '+Math.round(anyM?sm.mn:sb.mn)+'M';
+  document.getElementById('ok-vr').textContent='CHF '+Math.round(anyM?sm.v95:sb.v95)+'M';
+  document.getElementById('ok-cv').textContent='CHF '+Math.round(anyM?sm.cv:sb.cv)+'M';
+  document.getElementById('ok-p2').textContent=(anyM?sm.p20:sb.p20).toFixed(1)+'%';
+  document.getElementById('ok-sv').textContent=opBV!==null?'CHF '+Math.round(vs)+'M':'&mdash;';
+  var minO=Math.min(bL[0],mL[0])-1,maxO=Math.max(bL[N-1],mL[N-1])+1,bins2=55,bw2=(maxO-minO)/bins2;
+  var lbs2=[],cb2=new Array(bins2).fill(0),cm2=new Array(bins2).fill(0);
+  for(var b2=0;b2<bins2;b2++)lbs2.push(+(minO+b2*bw2).toFixed(1));
+  bL.forEach(function(v){cb2[Math.min(Math.floor((v-minO)/bw2),bins2-1)]++;});
+  mL.forEach(function(v){cm2[Math.min(Math.floor((v-minO)/bw2),bins2-1)]++;});
+  var L3=[[sb.v95,'#8b1a1a','VaR base','#f9c8c8'],[sm.v95,'#0a4040','VaR mit.','#e0f5f2']];
+  if(opCh){opCh.data.labels=lbs2;opCh.data.datasets[0].data=cb2;opCh.data.datasets[1].data=cm2;opCh._L=L3;opCh.update('none');}
+  else{opCh=new Chart(document.getElementById('opCh'),{type:'bar',data:{labels:lbs2,datasets:[{label:'Baseline',data:cb2,backgroundColor:'rgba(192,57,43,.4)',borderWidth:0,barPercentage:1,categoryPercentage:1},{label:'Mitigated',data:cm2,backgroundColor:'rgba(14,140,122,.55)',borderWidth:0,barPercentage:1,categoryPercentage:1}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:function(it){return'Loss ~CHF '+it[0].label+'M'}}}},scales:{x:{type:'linear',title:{display:true,text:'Annual operational loss (CHF M)',font:{size:10}},ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,.05)'}}}}});opCh._L=L3;}
+  var apf=(1-Math.exp(-fl/mt))*100,col2=sb.p20>25?'#8b1a1a':sb.p20>12?'#7a4a00':'#1a5c2a';
+  var itxt='<strong style="color:'+col2+'">Annual probability of at least one failure: '+apf.toFixed(1)+'%</strong> ('+fl+' units, MTBF '+mt+' yrs). Drought in '+Math.round(dp*100)+'% of years. Expected annual loss: CHF '+Math.round(sb.mn)+'M. VaR 95%: CHF '+Math.round(sb.v95)+'M. ';
+  if(anyM){itxt+='With active mitigations (CHF '+mc.toFixed(1)+'M/yr), VaR improves to <strong>CHF '+Math.round(sm.v95)+'M</strong> &mdash; saving CHF '+Math.round(vs)+'M in tail exposure.';if(vs>mc*3)itxt+=' <strong style="color:#1a5c2a">Highly cost-effective: CHF 1 returns CHF '+Math.round(vs/mc)+' in VaR reduction.</strong>';}
+  else itxt+='Toggle mitigations to quantify their impact on the loss distribution.';
+  document.getElementById('op-interp').innerHTML=itxt;
+  var ff=1-Math.exp(-fl/mt),scens=[
+    {title:'Equipment failure only',badge:'bh',icon:'ti-settings',prob:(ff*(1-dp)*100).toFixed(1),impact:Math.round(rv*(rc/12)/fl+ec*.9),desc:'Single turbine failure in a normal hydrology year.'},
+    {title:'Drought only',badge:'bm',icon:'ti-droplet-off',prob:(dp*(1-ff)*100).toFixed(1),impact:Math.round(rv*di),desc:'Below-median inflow year with no equipment failure.'},
+    {title:'Compound: failure + drought',badge:'bc',icon:'ti-alert-triangle',prob:(ff*dp*100).toFixed(1),impact:Math.round((rv*(rc/12)/fl+ec*.9+rv*di)*1.15),desc:'Simultaneous outage and drought with 15% amplification.'},
+    {title:'Extended tail event',badge:'bc',icon:'ti-flame',prob:'2&ndash;3',impact:Math.round((rv*(rc/12*1.8)/fl+ec*1.5+rv*di*1.3)*1.2),desc:'Multi-unit failure or long lead-time parts &mdash; maps to CVaR.'}
+  ];
+  document.getElementById('scg').innerHTML=scens.map(function(s){
+    return '<div class="scc"><div class="sct"><i class="ti '+s.icon+'" style="font-size:13px;color:var(--txt-m)" aria-hidden="true"></i><span>'+s.title+'</span><span class="bx '+s.badge+'" style="margin-left:auto">'+s.prob+'% p.a.</span></div>'
+      +'<div style="font-size:11px;color:var(--txt-m);line-height:1.45;margin-bottom:5px">'+s.desc+'</div>'
+      +'<div style="font-size:11px"><span style="color:var(--txt-m)">Est. loss: </span><span style="font-weight:500">CHF '+s.impact+'M</span></div></div>';
+  }).join('');
+}
+['os-fl','os-mt','os-rc','os-ec','os-rv','os-dp','os-di','os-dv'].forEach(function(id){document.getElementById(id).addEventListener('input',runOP);});
+
+buildHM();rnReg();buildBCM();runMC();runHG();runOP();
+</script>
+</body>
+</html>
